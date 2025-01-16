@@ -3,11 +3,10 @@ package handlers
 import (
 	"database/sql"
 	"forum/internal/db"
+	"forum/internal/utils"
 	"log"
 	"net/http"
 	"strings"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,8 +38,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Please fill in all fields", http.StatusBadRequest)
 			return
 		}
-		if len(password) < 6 {
-			http.Error(w, "Password must be at least 6 characters long", http.StatusBadRequest)
+		if !utils.ValidatePassword(password) {
+			http.Error(w, "Password must be at least 6 characters long, contain one uppercase, lowercase, digit and specials character", http.StatusBadRequest)
 			return
 		}
 
@@ -59,7 +58,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Hash the password
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		hashedPassword, err := utils.HashPassword(password)
 		if err != nil {
 			http.Error(w, "Server error", http.StatusInternalServerError)
 			log.Printf("Password hashing error: %v\n", err)
