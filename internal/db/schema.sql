@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS likes (
 	post_id INTEGER,
 	comment_id INTEGER,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	like_type TEXT NOT NULL CHECK (like_type IN ('like', 'dislike')),
 	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 	FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
 	FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
@@ -53,4 +54,11 @@ CREATE TABLE IF NOT EXISTS likes (
 		(post_id IS NOT NULL AND comment_id IS NULL) OR 
 		(post_id IS NULL AND comment_id IS NOT NULL)
 	)
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    session_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
