@@ -1,6 +1,7 @@
 package main
 
 import (
+	"forum/internal/auth"
 	"forum/internal/db"
 	"forum/internal/handlers"
 	"log"
@@ -12,14 +13,16 @@ func main() {
 	db.Init()
 
 	mux := http.NewServeMux()
+	
 	fs := http.FileServer(http.Dir("web/static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// Set up routes
 	mux.HandleFunc("/", handlers.HomeHandler)
-	mux.HandleFunc("/login", handlers.LoginHandler)
-	mux.HandleFunc("/register", handlers.RegisterHandler)
-	// mux.HandleFunc("/post", handlers.PostHandler)
+	mux.Handle("/login", auth.SessionMiddleware(auth.RedirectIfAuthenticated(http.HandlerFunc(handlers.LoginHandler))))
+	mux.Handle("/register", auth.SessionMiddleware(auth.RedirectIfAuthenticated(http.HandlerFunc(handlers.RegisterHandler))))
+	mux.Handle("/post/create", auth.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(handlers.CreatePostHandler))))
+	mux.Handle("/logout", auth.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(handlers.LogoutHandler))))
 
 	server := http.Server{
 		Addr:    ":8080",
