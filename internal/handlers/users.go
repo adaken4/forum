@@ -7,13 +7,74 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
+
+	"github.com/google/uuid"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		http.ServeFile(w, r, "web/templates/login.html")
 	} else if r.Method == http.MethodPost {
-		// login logic
+		// Parse form data
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "Unable to process form", http.StatusBadRequest)
+			return
+		}
+
+		// Extract form fields
+		identifier := r.FormValue("identifier") // Can be email or username
+		password := r.FormValue("password")
+
+		// Validate inputs
+		if identifier == "" || password == "" {
+			http.Error(w, "All fields are required", http.StatusBadRequest)
+			return
+		}
+
+		// Check if the user exists in the database
+		var storedHash, userID string
+		query := `SELECT user_id, password FROM users WHERE email = ? OR username = ?`
+		err := db.DB.QueryRow(query, identifier, identifier).Scan(&userID, &storedHash)
+		if err == sql.ErrNoRows {
+			http.Error(w, "Invalid email/username or password", http.StatusUnauthorized)
+			return
+		} else if err != nil {
+			http.Error(w, "Server error", http.StatusInternalServerError)
+			log.Printf("Database query error: %v", err)
+			return
+		}
+
+		// Compare the provided password with the stored hash
+		if err := bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password)); err != nil {
+			http.Error(w, "Invalid email/username or password", http.StatusUnauthorized)
+			return
+		}
+
+		// Create a session
+		sessionID := uuid.New().String()
+		expiration := time.Now().Add(24 * time.Hour) // 1-day session expiration
+		insertQuery := `INSERT INTO sessions (session_id, user_id, expires_at) VALUES (?, ?, ?)`
+		_, err = db.DB.Exec(insertQuery, sessionID, userID, expiration)
+		if err != nil {
+			http.Error(w, "Failed to create session", http.StatusInternalServerError)
+			log.Printf("Database insert error: %v", err)
+			return
+		}
+
+		// Set a session cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:     "session_id",
+			Value:    sessionID,
+			Expires:  expiration,
+			Path:     "/",
+			HttpOnly: true, // Prevent JavaScript access
+		})
+
+		// Redirect to the home page or dashboard
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
