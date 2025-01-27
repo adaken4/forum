@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3" // Import SQLite3 driver
 )
@@ -18,6 +19,7 @@ func Init() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v\n", err)
 	}
+	defer DB.Close()
 
 	createTables()
 }
@@ -43,4 +45,12 @@ func createTables() {
 	}
 
 	log.Println("All tables created successfully.")
+}
+
+func CleanupExpiredSessions() {
+	query := `DELETE FROM sessions WHERE expires_at < ?`
+	_, err := DB.Exec(query, time.Now())
+	if err != nil {
+		log.Printf("Error cleaning up sessions: %v", err)
+	}
 }
