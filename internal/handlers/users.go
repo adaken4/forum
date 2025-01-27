@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"forum/internal/db"
 	"forum/internal/utils"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -16,7 +17,14 @@ import (
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		http.ServeFile(w, r, "web/templates/login.html")
+		// Render the login page
+		tmpl := template.Must(template.ParseFiles("web/templates/layout.html", "web/templates/login.html"))
+		err := tmpl.Execute(w, nil)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	} else if r.Method == http.MethodPost {
 		// Parse form data
 		if err := r.ParseForm(); err != nil {
@@ -80,8 +88,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		// Serve the register page
-		http.ServeFile(w, r, "web/templates/register.html")
+		// Render the register page
+		tmpl := template.Must(template.ParseFiles("web/templates/layout.html", "web/templates/register.html"))
+		err := tmpl.Execute(w, nil)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	} else if r.Method == http.MethodPost {
 		// Parse form data
 		if err := r.ParseForm(); err != nil {

@@ -20,6 +20,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := db.DB.Query(query)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Unable to fetch posts", http.StatusInternalServerError)
 		return
 	}
@@ -50,6 +51,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			ORDER BY c.created_at ASC`
 		commentRows, err := db.DB.Query(commentQuery, post.PostID)
 		if err != nil {
+			log.Println(err)
 			http.Error(w, "Unable to fetch comments", http.StatusInternalServerError)
 			return
 		}

@@ -19,7 +19,7 @@ func Init() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v\n", err)
 	}
-	defer DB.Close()
+	// defer DB.Close()
 
 	createTables()
 }
