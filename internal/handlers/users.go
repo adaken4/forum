@@ -139,3 +139,33 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    // Get the session cookie
+    cookie, err := r.Cookie("session_id")
+    if err == nil && cookie.Value != "" {
+        // Delete the session from database
+        query := `DELETE FROM sessions WHERE session_id = ?`
+        _, err := db.DB.Exec(query, cookie.Value)
+        if err != nil {
+            log.Printf("Error deleting session: %v", err)
+        }
+    }
+
+    // Clear the session cookie regardless of db operation success
+    http.SetCookie(w, &http.Cookie{
+        Name:     "session_id",
+        Value:    "",
+        Expires:  time.Now().Add(-time.Hour), // Set expiry in the past
+        Path:     "/",
+        HttpOnly: true,
+    })
+
+// Redirect to login page
+    http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
