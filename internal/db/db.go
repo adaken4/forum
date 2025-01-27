@@ -22,6 +22,7 @@ func Init() {
 	// defer DB.Close()
 
 	createTables()
+	createCategories()
 }
 
 // createTables reads SQL statements from a file and executes them to set up the database schema.
@@ -45,6 +46,27 @@ func createTables() {
 	}
 
 	log.Println("All tables created successfully.")
+}
+
+func createCategories() {
+	predefinedCategories := []struct {
+		Name string
+		Description string
+	}{
+		{"Technology", "Posts related to the latest technology and trends"},
+		{"Health", "Discussions about health, fitness, and well-being"},
+		{"Educaton", "Topics about learning and education"},
+		{"Entertainment", "Movies, music, games, and all things fun"},
+		{"Lifestyle", "Fashion, home decor, and daily living tips"},
+		{"Travel", "Exploring the world, sharing travel experiences"},
+	}
+
+	for _, category := range predefinedCategories {
+		_, err := DB.Exec(`INSERT OR IGNORE INTO categories (name, description) VALUES (?, ?)`, category.Name, category.Description)
+		if err != nil {
+			log.Printf("Error inserting category '%s': '%v'", category.Name, err)
+		}
+	}
 }
 
 func CleanupExpiredSessions() {
