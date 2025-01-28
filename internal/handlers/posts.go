@@ -10,7 +10,7 @@ import (
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the user ID from the context
-	userID, ok := r.Context().Value(auth.UserIDKey()).(string)
+	userID, ok := auth.GetUserID(r)
 	if !ok || userID == "" {
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return

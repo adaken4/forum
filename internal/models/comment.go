@@ -1,9 +1,13 @@
 package models
 
+import "time"
+
 type Comment struct {
-	CommentID int
-	Content   string
-	Username  string
-	CreatedAt string
-	UpdatedAt string
+	CommentID int       `db:"comment_id"`
+	PostID    int       `db:"post_id"`
+	UserID    int       `db:"user_id"`
+	Content   string    `db:"content"`
+	Username  string	`db:"user_name"`
+	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
