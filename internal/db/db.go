@@ -50,7 +50,7 @@ func createTables() {
 
 func createCategories() {
 	predefinedCategories := []struct {
-		Name string
+		Name        string
 		Description string
 	}{
 		{"Technology", "Posts related to the latest technology and trends"},
@@ -71,8 +71,17 @@ func createCategories() {
 
 func CleanupExpiredSessions() {
 	query := `DELETE FROM sessions WHERE expires_at < ?`
-	_, err := DB.Exec(query, time.Now())
+	_, err := DB.Exec(query, time.Now().Add(-24*time.Hour)) // Allocating 24-hour session duration
 	if err != nil {
 		log.Printf("Error cleaning up sessions: %v", err)
+	}
+}
+
+func ScheduleSessionCleanup() {
+	ticker := time.NewTicker(1 * time.Hour) // Set to clean up expired sessions every hour
+	defer ticker.Stop()
+
+	for range ticker.C {
+		CleanupExpiredSessions()
 	}
 }

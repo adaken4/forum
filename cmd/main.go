@@ -11,6 +11,7 @@ import (
 func main() {
 	// Initialize the database
 	db.Init()
+	go db.ScheduleSessionCleanup()
 
 	mux := http.NewServeMux()
 	
