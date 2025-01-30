@@ -7,13 +7,18 @@
         <h2>{{ .Title }}</h2>
         <p><strong>Posted by:</strong> {{ .Username }} | <strong>Category:</strong> {{ .Category }} | <strong>Created at:</strong> {{ .CreatedAt }}</p>
         <p>{{ .Content }}</p>
-        <p><strong>Likes:</strong> {{ .LikeCount }} | <strong>Dislikes:</strong> {{ .DislikeCount }}</p>
+        <div>
+            <button id="like-post-{{ .PostID }}" onclick="reactToPost({{ .UserID }}, {{ .PostID }}, 'like')">👍 Like (<span id="like-count-{{ .PostID }}">{{ .LikeCount }}</span>)</button>
+            <button id="dislike-post-{{ .PostID }}" onclick="reactToPost({{ .UserID }}, {{ .PostID }}, 'dislike')">👎 Dislike (<span id="dislike-count-{{ .PostID }}">{{ .DislikeCount }}</span>)</button>
+        </div>
         <h3>Comments</h3>
         {{ if .Comments }}
             {{ range .Comments }}
             <div class="comment">
                 <p><strong>{{ .Username }}</strong> ({{ .CreatedAt }}):</p>
                 <p>{{ .Content }}</p>
+                <button id="like-comment-{{ .CommentID }}" onclick="reactToComment({{ .UserID }}, {{ .CommentID }}, 'like')">👍 Like (<span id="like-count-{{ .CommentID }}">{{ .LikeCount }}</span>)</button>
+                <button id="dislike-comment-{{ .CommentID }}" onclick="reactToComment({{ .UserID }}, {{ .CommentID }}, 'dislike')">👎 Dislike (<span id="dislike-count-{{ .CommentID }}">{{ .DislikeCount }}</span>)</button>
             </div>
             {{end}}
         {{ else }}

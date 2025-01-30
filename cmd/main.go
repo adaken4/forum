@@ -24,6 +24,7 @@ func main() {
 	mux.Handle("/register", auth.SessionMiddleware(auth.RedirectIfAuthenticated(http.HandlerFunc(handlers.RegisterHandler))))
 	mux.Handle("/post/create", auth.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(handlers.CreatePostHandler))))
 	mux.Handle("/comment/create", auth.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(handlers.CreateCommentHandler))))
+	mux.Handle("/like", auth.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(handlers.LikeHandler))))
 	mux.Handle("/logout", auth.SessionMiddleware(auth.RequireAuth(http.HandlerFunc(handlers.LogoutHandler))))
 
 	server := http.Server{
