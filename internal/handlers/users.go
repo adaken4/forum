@@ -61,6 +61,15 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Delete any existing session for the user (enforcing single-session authentication)
+		deleteQuery := `DELETE FROM sessions WHERE user_id = ?`
+		_, err = db.DB.Exec(deleteQuery, userID)
+		if err != nil {
+			http.Error(w, "Failed to clear old sessions", http.StatusInternalServerError)
+			log.Printf("Database delete error: %v", err)
+			return
+		}
+
 		// Create a session
 		sessionID := uuid.New().String()
 		expiration := time.Now().Add(24 * time.Hour) // 1-day session expiration
@@ -81,7 +90,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true, // Prevent JavaScript access
 		})
 
-		// Redirect to the home page or dashboard
+		// Redirect to the home page
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
@@ -155,31 +164,31 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-    if r.Method != http.MethodPost {
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-        return
-    }
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
-    // Get the session cookie
-    cookie, err := r.Cookie("session_id")
-    if err == nil && cookie.Value != "" {
-        // Delete the session from database
-        query := `DELETE FROM sessions WHERE session_id = ?`
-        _, err := db.DB.Exec(query, cookie.Value)
-        if err != nil {
-            log.Printf("Error deleting session: %v", err)
-        }
-    }
+	// Get the session cookie
+	cookie, err := r.Cookie("session_id")
+	if err == nil && cookie.Value != "" {
+		// Delete the session from database
+		query := `DELETE FROM sessions WHERE session_id = ?`
+		_, err := db.DB.Exec(query, cookie.Value)
+		if err != nil {
+			log.Printf("Error deleting session: %v", err)
+		}
+	}
 
-    // Clear the session cookie regardless of db operation success
-    http.SetCookie(w, &http.Cookie{
-        Name:     "session_id",
-        Value:    "",
-        Expires:  time.Now().Add(-time.Hour), // Set expiry in the past
-        Path:     "/",
-        HttpOnly: true,
-    })
+	// Clear the session cookie regardless of db operation success
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_id",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour), // Set expiry in the past
+		Path:     "/",
+		HttpOnly: true,
+	})
 
-// Redirect to login page
-    http.Redirect(w, r, "/login", http.StatusSeeOther)
+	// Redirect to login page
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
