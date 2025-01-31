@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"forum/internal/db"
@@ -16,8 +15,6 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
-
-	fmt.Println(r.Body)
 
 	// Parse JSON request
 	var req models.LikeRequest
@@ -76,29 +73,6 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
 	}
-
-	// // If the user already reacted
-	// if existingLikeType == req.LikeType {
-	// 	// User clicked the same reaction → Remove it (unlike/undislike)
-	// 	deleteQuery := `DELETE FROM likes WHERE user_id = ? AND post_id IS ? AND comment_id IS ?`
-	// 	_, err = db.DB.Exec(deleteQuery, req.UserID, req.PostID, req.CommentID)
-	// 	if err != nil {
-	// 		http.Error(w, "Failed to remove like", http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// 	w.WriteHeader(http.StatusOK)
-	// 	json.NewEncoder(w).Encode(map[string]string{"message": "Reaction removed"})
-	// } else {
-	// 	// User clicked opposite reaction → Toggle it (like ↔ dislike)
-	// 	updateQuery := `UPDATE likes SET like_type = ? WHERE user_id = ? AND post_id IS ? AND comment_id IS ?`
-	// 	_, err = db.DB.Exec(updateQuery, req.LikeType, req.UserID, req.PostID, req.CommentID)
-	// 	if err != nil {
-	// 		http.Error(w, "Failed to toggle reaction", http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// 	w.WriteHeader(http.StatusOK)
-	// 	json.NewEncoder(w).Encode(map[string]string{"message": "Reaction toggled"})
-	// }
 
 	var likes, dislikes int
 	countQuery := `

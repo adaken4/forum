@@ -1,24 +1,3 @@
-// async function toggleReaction(postID, type) {
-//     try {
-//         const response = await fetch(`/like?post_id=${postID}&type=${type}`, {
-//             method: "POST",
-//             credentials: "include"
-//         });
-
-//         if (!response.ok) {
-//             const errorText = await response.text();
-//             alert("Error: " + errorText);
-//             return;
-//         }
-
-//         const data = await response.json();
-//         document.getElementById(`likes-${postID}`).innerText = data.likes;
-//         document.getElementById(`dislikes-${postID}`).innerText = data.dislikes;
-//     } catch (error) {
-//         console.error("Error toggling like:", error);
-//     }
-// }
-
 // Function to handle like/dislike for a post
 async function reactToPost(userId, postId, likeType) {
     try {
@@ -88,31 +67,6 @@ function updateReactionUI(postId, commentId, likes, dislikes, userReaction) {
         return;
     }
 
-    // if (likeType === "like") {
-    //     if (likeBtn.classList.contains("active")) {
-    //         likeBtn.classList.remove("active");
-    //         likeCount.innerText = parseInt(likeCount.innerText) - 1;
-    //     } else {
-    //         likeBtn.classList.add("active");
-    //         likeCount.innerText = parseInt(likeCount.innerText) + 1;
-    //         if (dislikeBtn.classList.contains("active")) {
-    //             dislikeBtn.classList.remove("active");
-    //             dislikeCount.innerText = parseInt(dislikeCount.innerText) - 1;
-    //         }
-    //     }
-    // } else if (likeType === "dislike") {
-    //     if (dislikeBtn.classList.contains("active")) {
-    //         dislikeBtn.classList.remove("active");
-    //         dislikeCount.innerText = parseInt(dislikeCount.innerText) - 1;
-    //     } else {
-    //         dislikeBtn.classList.add("active");
-    //         dislikeCount.innerText = parseInt(dislikeCount.innerText) + 1;
-    //         if (likeBtn.classList.contains("active")) {
-    //             likeBtn.classList.remove("active");
-    //             likeCount.innerText = parseInt(likeCount.innerText) - 1;
-    //         }
-    //     }
-    // }
     // Update counts with real backend data
     likeCount.innerText = likes;
     dislikeCount.innerText = dislikes;

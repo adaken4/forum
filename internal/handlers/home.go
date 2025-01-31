@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+	"forum/internal/auth"
 	"forum/internal/db"
 	"forum/internal/models"
 	"html/template"
@@ -9,6 +11,10 @@ import (
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+
+	currentUserID := auth.GetCurrentUserID(r)
+	fmt.Println(currentUserID)
+
 	query := `
 		SELECT p.post_id, p.title, p.content, u.username, u.user_id, c.name AS category, p.created_at,
 		       (SELECT COUNT(*) FROM likes WHERE post_id = p.post_id AND comment_id IS NULL AND like_type = 'like') AS like_count,
@@ -72,9 +78,17 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		posts = append(posts, post)
 	}
 
+	data := struct {
+		Posts         []models.Post
+		CurrentUserID int
+	}{
+		Posts:         posts,
+		CurrentUserID: currentUserID,
+	}
+
 	tmpl := template.Must(template.ParseFiles("web/templates/layout.html", "web/templates/home.html"))
 
-	err = tmpl.Execute(w, posts)
+	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Unable to render template", http.StatusInternalServerError)
