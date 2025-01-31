@@ -53,13 +53,13 @@ function updateReactionUI(postId, commentId, likes, dislikes, userReaction) {
     if (postId) {
         likeBtn = document.querySelector(`#like-post-${postId}`);
         dislikeBtn = document.querySelector(`#dislike-post-${postId}`);
-        likeCount = document.querySelector(`#like-count-${postId}`);
-        dislikeCount = document.querySelector(`#dislike-count-${postId}`);
+        likeCount = document.querySelector(`#post-like-count-${postId}`);
+        dislikeCount = document.querySelector(`#post-dislike-count-${postId}`);
     } else if (commentId) {
         likeBtn = document.querySelector(`#like-comment-${commentId}`);
         dislikeBtn = document.querySelector(`#dislike-comment-${commentId}`);
-        likeCount = document.querySelector(`#like-count-${commentId}`);
-        dislikeCount = document.querySelector(`#dislike-count-${commentId}`);
+        likeCount = document.querySelector(`#comment-like-count-${commentId}`);
+        dislikeCount = document.querySelector(`#comment-dislike-count-${commentId}`);
     }
 
     if (!likeBtn || !dislikeBtn || !likeCount || !dislikeCount) {

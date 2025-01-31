@@ -50,7 +50,9 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Fetch comments for each post
 		commentQuery := `
-			SELECT c.comment_id, c.content, u.username, u.user_id, c.created_at
+			SELECT c.comment_id, c.post_id, c.content, u.username, u.user_id, c.created_at,
+				(SELECT COUNT(*) FROM likes WHERE comment_id = c.comment_id AND like_type = 'like') AS like_count,
+				(SELECT COUNT(*) FROM likes WHERE comment_id = c.comment_id AND like_type = 'dislike') AS dislike_count
 			FROM comments c
 			JOIN users u ON c.user_id = u.user_id
 			WHERE c.post_id = ?
@@ -65,7 +67,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		var comments []models.Comment
 		for commentRows.Next() {
 			var comment models.Comment
-			err := commentRows.Scan(&comment.CommentID, &comment.Content, &comment.Username, &comment.UserID, &comment.CreatedAt)
+			err := commentRows.Scan(&comment.CommentID, &comment.PostID, &comment.Content, &comment.Username, &comment.UserID, &comment.CreatedAt, &comment.LikeCount, &comment.DislikeCount)
 			if err != nil {
 				http.Error(w, "Error scanning comments", http.StatusInternalServerError)
 				return
