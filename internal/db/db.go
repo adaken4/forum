@@ -55,7 +55,7 @@ func createCategories() {
 	}{
 		{"Technology", "Posts related to the latest technology and trends"},
 		{"Health", "Discussions about health, fitness, and well-being"},
-		{"Educaton", "Topics about learning and education"},
+		{"Education", "Topics about learning and education"},
 		{"Entertainment", "Movies, music, games, and all things fun"},
 		{"Lifestyle", "Fashion, home decor, and daily living tips"},
 		{"Travel", "Exploring the world, sharing travel experiences"},
