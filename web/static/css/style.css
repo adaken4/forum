@@ -8,7 +8,7 @@ body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #f0f2f5;
+    background-color: #f8f9fA;
     margin: 0;
     padding: 0;
 }
@@ -19,6 +19,7 @@ header {
     color: white;
     padding: 1rem 2rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 header h1 {
@@ -64,6 +65,48 @@ nav button:hover {
     color: #004d7a;
 }
 
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem;
+}
+
+.sidebar {
+    width: 250px;
+    padding: 1rem;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.comments-container {
+    display: none;
+    padding-top: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    cursor: pointer;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: #004d7a;
+    color: white;
+}
+
+button:hover {
+    background-color: #00334e;
+}
+
 /* Main Content */
 main {
     max-width: 800px;
@@ -89,8 +132,8 @@ p {
     border: 1px solid #ddd;
     border-radius: 5px;
     margin-bottom: 1.5rem;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .post h2 {
@@ -190,3 +233,4 @@ footer {
         font-size: 0.9rem;
     }
 }
+

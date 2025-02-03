@@ -18,7 +18,7 @@ import (
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		// Render the login page
-		tmpl := template.Must(template.ParseFiles("web/templates/layout.html", "web/templates/login.html"))
+		tmpl := template.Must(template.ParseFiles("web/templates/layout.html", "web/templates/login.html", "web/templates/sidebar.html"))
 		err := tmpl.Execute(w, nil)
 		if err != nil {
 			log.Println(err)
@@ -98,7 +98,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		// Render the register page
-		tmpl := template.Must(template.ParseFiles("web/templates/layout.html", "web/templates/register.html"))
+		tmpl := template.Must(template.ParseFiles("web/templates/layout.html", "web/templates/register.html", "web/templates/sidebar.html"))
 		err := tmpl.Execute(w, nil)
 		if err != nil {
 			log.Println(err)

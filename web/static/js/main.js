@@ -81,3 +81,13 @@ function updateReactionUI(postId, commentId, likes, dislikes, userReaction) {
         dislikeBtn.classList.add("active");
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".toggle-comments").forEach(button => {
+        button.addEventListener("click", function () {
+            let postId = this.getAttribute("data-post-id");
+            let commentSection = document.getElementById(`comments-${postId}`);
+            commentSection.classList.toggle("hidden");
+        });
+    });
+});

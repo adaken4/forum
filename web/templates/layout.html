@@ -22,10 +22,14 @@
             </a>
         </nav>
     </header>
-    <main>
-        {{block "content" .}}
-        {{ end }}
-    </main>
+    <div class="container">
+        <aside>
+            {{ template "sidebar" . }}
+        </aside>
+        <main>
+            {{ block "content" . }}{{ end }}
+        </main>
+    </div>
 </body>
 <script src="static/js/main.js"></script>
 </html>

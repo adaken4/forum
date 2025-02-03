@@ -43,7 +43,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Render the form
-		tmpl, err := template.ParseFiles("web/templates/layout.html", "web/templates/post.html")
+		tmpl, err := template.ParseFiles("web/templates/layout.html", "web/templates/post.html", "web/templates/sidebar.html")
 		if err != nil {
 			http.Error(w, "Unable to load template", http.StatusInternalServerError)
 			return
